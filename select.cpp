@@ -3,7 +3,17 @@
 #include <sys/select.h> // select IO multiplexing model
 
 #define SOCKETCLIENTSCOUNT 128
-
+/*
+IO multiplexing 的好处是可以管理多个IO流，反馈速度肯定没有pre thread 快.
+好处就是一个thread 能够管理大量的 IO Steam
+*/
+/*
+select model 是最简单的 也存在致命的缺点
+1、每次都需要使用 FD_SET 将用户态的 fd copy到内核态
+2、linux 存在着限制 只能使用1024的 FD_SETSIZE。
+3、不会告知具体 fd 可读，需要将所有都遍历。 FD_ISSET() 函数
+4、线程不安全,如果在其它线程close 则会导致不可预测
+*/
 static void accpet_client(int *clients_fd, int listen_fd);
 static void recv_client_msg(int *clients_fd, fd_set *readfds);
 static void handle_client_msg(int fd, char *buf);
@@ -89,6 +99,6 @@ static void recv_client_msg(int *clients_fd, fd_set *readfds) {
 
 static void handle_client_msg(int fd, char *buf) {
   assert(buf);
-  printf("recv buf is:%s, sizeof is: %d\n", buf, strlen(buf));
+  printf("recv buf is:%s", buf);
   write(fd, buf, strlen(buf));
 }
