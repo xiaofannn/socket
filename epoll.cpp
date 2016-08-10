@@ -49,7 +49,7 @@ static void addEvent(int epoll_fd, int add_fd, int event) {
   epoll_ctl(epoll_fd, EPOLL_CTL_ADD, add_fd, &ev);
 }
 
-static void handle_event(int epoll_fd, epoll_wait *events, int num,
+static void handle_event(int epoll_fd, epoll_event *events, int num,
                          int listen_fd) {
   for (size_t i = 0; i < num; i++) {
     int fd = events[i].data.fd;
