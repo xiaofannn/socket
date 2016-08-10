@@ -36,8 +36,8 @@ int main(int argc, char const *argv[]) {
   addEvent(epoll_fd, listen_fd, EPOLLIN);
 
   while (true) {
-    int ret = epoll_wait(epoll_fd, epoll_events, EPOLLSIZE, -1);
-    handle_event(epoll_fd, epoll_events, ret, listen_fd);
+    int ret = epoll_wait(epoll_fd, events, EPOLLSIZE, -1);
+    handle_event(epoll_fd, events, ret, listen_fd);
   }
   return 0;
 }
@@ -57,7 +57,7 @@ static void handle_event(int epoll_fd, epoll_event *events, int num,
     if ((fd == listen_fd) && (events[i].events & EPOLLIN))
       handle_accept(epoll_fd, listen_fd);
     else if (events[i].events & EPOLLIN)
-      do_read(events[i].data.fd);
+      do_read(epoll_fd, events[i].data.fd);
   }
 }
 
