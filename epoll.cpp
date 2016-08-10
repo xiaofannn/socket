@@ -32,7 +32,7 @@ int main(int argc, char const *argv[]) {
   int listen_fd = socket_bind(IPADDRESS, PORT);
 
   int epoll_fd = epoll_create(1024);
-  epoll_events[SOCKETCLIENTSCOUNT];
+  epoll_event events[SOCKETCLIENTSCOUNT];
   addEvent(epoll_fd, listen_fd, EPOLLIN);
 
   while (true) {
