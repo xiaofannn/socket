@@ -1,3 +1,4 @@
+#include "stdafx.hpp"
 #include <sys/epoll.h>
 
 #define EPOLLSIZE 1024
