@@ -24,19 +24,19 @@ struct epoll_event {
 static void addEvent(int epoll_fd, int add_fd, int event);
 static void handle_event(int epoll_fd, epoll_event *events, int num,
                          int listen_fd);
-static void do_read(int client_fd);
+static void do_read(int epoll_fd, int client_fd);
 static void handle_accept(int epoll_fd, int listen_fd);
 static void delete_event(int epoll_fd, int client_fd, int event);
 
 int main(int argc, char const *argv[]) {
   int listen_fd = socket_bind(IPADDRESS, PORT);
 
-  int epoll_fd = epoll_crete(1024);
+  int epoll_fd = epoll_create(1024);
   epoll_events[SOCKETCLIENTSCOUNT];
   addEvent(epoll_fd, listen_fd, EPOLLIN);
 
   while (true) {
-    int ret = epoll_wait(epoll_fd, epoll_events, EPOLLEVENTS, -1);
+    int ret = epoll_wait(epoll_fd, epoll_events, EPOLLSIZE, -1);
     handle_event(epoll_fd, epoll_events, ret, listen_fd);
   }
   return 0;
@@ -57,16 +57,16 @@ static void handle_event(int epoll_fd, epoll_wait *events, int num,
     if ((fd == listen_fd) && (events[i].events & EPOLLIN))
       handle_accept(epoll_fd, listen_fd);
     else if (events[i].events & EPOLLIN)
-      do_read();
+      do_read(events[i].data.fd);
   }
 }
 
 static void handle_accept(int epoll_fd, int listen_fd) {
-  int cient_fd = accept(listen_fd, NULL, NULL);
+  int client_fd = accept(listen_fd, NULL, NULL);
   addEvent(epoll_fd, client_fd, EPOLLIN);
 }
 
-static void do_read(int client_fd) {
+static void do_read(int epoll_fd, int client_fd) {
   char buf[1024] = {0};
   int nread = read(client_fd, buf, 1024);
 
