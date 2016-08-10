@@ -46,9 +46,8 @@ int main(int argc, char const *argv[]) {
 
     if (FD_ISSET(listen_fd, &readfds)) {
       accpet_client(clients_fd, listen_fd);
-    } else {
-      recv_client_msg(clients_fd, &readfds);
     }
+    recv_client_msg(clients_fd, &readfds);
   }
 
   return 0;
