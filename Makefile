@@ -1,4 +1,4 @@
-all: select_server client
+all: select_server poll_server epoll_server  client
 
 select_server:
 	g++ -o select_server select.cpp
